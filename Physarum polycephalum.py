@@ -48,7 +48,7 @@ class Hexagon:
                                      (self.x, self.y - self.a)], 1)
 
 
-    def choise(self):
+    def choice(self):
         polygon(self.screen, VIOLET, [(self.x, self.y - self.a),
                                      (self.x + self.a * 3**0.5 /2, self.y - self.a/2),
                                      (self.x + self.a * 3**0.5 /2, self.y + self.a/2),
@@ -292,8 +292,8 @@ while not finished_1:
     clock.tick(FPS)
 
     click_position = pygame.mouse.get_pos()
-    choise_hex_number = search(click_position, field)
-    field[choise_hex_number].choise()
+    choice_hex_number = search(click_position, field)
+    field[choice_hex_number].choice()
   
     
     for event in pygame.event.get():
@@ -301,7 +301,7 @@ while not finished_1:
             finished_1 = True
         else:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                physarum_1 = Physarum_1(screen, field[choise_hex_number], YELLOW_1)
+                physarum_1 = Physarum_1(screen, field[choice_hex_number], YELLOW_1)
                 physarum_1.probability_of_motion()
                 finished_1 = True
                 finished_2 = False
@@ -320,11 +320,11 @@ while not finished_2:
     clock.tick(FPS)
 
     click_position = pygame.mouse.get_pos()
-    choise_hex_number = search(click_position, field)
-    if field[choise_hex_number] != physarum_1.mass[0]:
-        field[choise_hex_number].choise()
+    choice_hex_number = search(click_position, field)
+    if field[choice_hex_number] != physarum_1.mass[0]:
+        field[choice_hex_number].choice()
     else:
-        choise_hex_number = "1"
+        choice_hex_number = "1"
 
   
     
@@ -332,8 +332,8 @@ while not finished_2:
         if event.type == pygame.QUIT:
             finished_2 = True
         else:
-            if (event.type == pygame.MOUSEBUTTONDOWN) and (choise_hex_number != "1"):
-                physarum_2 = Physarum_2(screen, field[choise_hex_number], GREEN_1)
+            if (event.type == pygame.MOUSEBUTTONDOWN) and (choice_hex_number != "1"):
+                physarum_2 = Physarum_2(screen, field[choice_hex_number], GREEN_1)
                 physarum_2.probability_of_motion()
                 finished_2 = True
                 finished_3 = False
@@ -370,8 +370,8 @@ while not finished_3:
 
     
     click_position = pygame.mouse.get_pos()
-    choise_hex_number = search(click_position, field)
-    field[choise_hex_number].choise()
+    choice_hex_number = search(click_position, field)
+    field[choice_hex_number].choice()
     
 
     for event in pygame.event.get():
@@ -379,8 +379,8 @@ while not finished_3:
             finished_3 = True
         else:
             if (event.type == pygame.MOUSEBUTTONDOWN) and (move == 1):
-                new_food = Food(screen, field[choise_hex_number].x - field[choise_hex_number].a / 2.5, field[choise_hex_number].y, field[choise_hex_number].a, RED )
-                field[choise_hex_number].food_1 += 1
+                new_food = Food(screen, field[choice_hex_number].x - field[choice_hex_number].a / 2.5, field[choice_hex_number].y, field[choice_hex_number].a, RED )
+                field[choice_hex_number].food_1 += 1
                 feed_1 += [new_food]
                 move = -1
                 for i in field:
@@ -420,8 +420,8 @@ while not finished_3:
 
 
             elif (event.type == pygame.MOUSEBUTTONDOWN) and (move == 2):
-                new_food = Food(screen, field[choise_hex_number].x + field[choise_hex_number].a / 2.5, field[choise_hex_number].y, field[choise_hex_number].a, BLUE)
-                field[choise_hex_number].food_2 += 1
+                new_food = Food(screen, field[choice_hex_number].x + field[choice_hex_number].a / 2.5, field[choice_hex_number].y, field[choice_hex_number].a, BLUE)
+                field[choice_hex_number].food_2 += 1
                 feed_2 += [new_food]
                 move = -2
                 for i in field:
