@@ -48,8 +48,14 @@ class Hexagon:
                                      (self.x, self.y - self.a)], 1)
 
 
+    '''функция, рисующая подсветку выбранной клетки
+    в зависимости от игрока, делающего ход'''
     def choice(self):
-        polygon(self.screen, VIOLET, [(self.x, self.y - self.a),
+        if not finished_1 or move > 0:
+            FRAME_COLOR = DARK_YELLOW_1
+        if not finished_2 or move < 0:
+            FRAME_COLOR = DARK_GREEN_1
+        polygon(self.screen, FRAME_COLOR, [(self.x, self.y - self.a),
                                      (self.x + self.a * 3**0.5 /2, self.y - self.a/2),
                                      (self.x + self.a * 3**0.5 /2, self.y + self.a/2),
                                      (self.x, self.y + self.a),
@@ -79,12 +85,12 @@ class Food:
 
     def __init__(self, screen, x, y, a, color):
         self.screen = screen
-        self.x = x 
+        self.x = x
         self.y = y - a / 2.5
         self.r = a / 7
         self.color = color
         self.f = pygame.font.Font(None, 20)
-        
+
 
     def drawf(self):
         circle(self.screen, self.color, (self.x, self.y), self.r)
@@ -102,40 +108,51 @@ class Physarum_1:
             i.color = self.color
 
     def probability_of_motion(self):
+        self.neighbors_1 = []
         for i in self.mass:
             if (i.number % 34 != 0) and (field[i.number - 1].color != self.color):
-                self.neighbors_1 += [field[i.number - 1]] #учтены границы
+                self.neighbors_1 += [field[i.number - 1]]
             if ((i.number + 1) % 34 != 0) and (field[i.number + 1].color != self.color):
-                self.neighbors_1 += [field[i.number + 1]] #чтены границы (далее нигде не учтены)
+                self.neighbors_1 += [field[i.number + 1]]
             if (i.number - 34 >= 0) and (field[i.number - 34].color != self.color):
                 self.neighbors_1 += [field[i.number - 34]]
-            if (i.number + 34 >= 0) and (field[i.number + 34].color != self.color):
+            if (i.number + 34 <= 781) and (field[i.number + 34].color != self.color):
                 self.neighbors_1 += [field[i.number +34]]
-                
+
             if (i.number // 34) % 2 == 0:
-                if (i.number - 35 >= 0) and (field[i.number - 35].color != self.color):
+                if (i.number - 35 >= 0) and (i.number % 34 != 0) and (field[i.number - 35].color != self.color):
                     self.neighbors_1 += [field[i.number - 35]]
-                if (i.number + 33 >= 0) and (field[i.number + 33].color != self.color):
+                if (i.number + 34 <= 781) and (i.number % 34 != 0) and (field[i.number + 33].color != self.color):
                     self.neighbors_1 += [field[i.number + 33]]
             else:
-                if (i.number + 35 >= 0) and (field[i.number + 35].color != self.color) :
+                if (i.number + 34 <= 781) and ((i.number + 1) % 34 != 0) and (field[i.number + 35].color != self.color) :
                     self.neighbors_1 += [field[i.number + 35]]
-                if (i.number - 33 >= 0) and (field[i.number - 33].color != self.color) :
+                if (i.number - 34 >= 0) and ((i.number + 1) % 34 != 0) and (field[i.number - 33].color != self.color) :
                     self.neighbors_1 += [field[i.number - 33]]
-                
+
         for j in self.neighbors_1:
             j.probability_1 = 0.2
-            
+
         return self.neighbors_1
 
     def rise(self):
         for i in self.neighbors_1:
-            if i.probability_1 >= random.random():
+            if (i.probability_1 >= random.uniform(0, 1)) and (i.color != self.color):
                 i.color = self.color
                 self.mass += [i]
+        self.mass = list(set(self.mass))
         self.neighbors_1 = []
-                
-            
+
+    def eating(self):
+        self.mass = list(set(self.mass))
+        for i in self.mass:
+            for j in physarum_2.mass:
+                if i == j:
+                    self.mass.remove(i)
+            #if i.color != self.color:
+                #self.mass.remove(i)
+
+
 
 class Physarum_2:
     def __init__(self, screen, mass, color):
@@ -149,40 +166,53 @@ class Physarum_2:
             i.color = self.color
 
     def probability_of_motion(self):
+        self.neighbors_2 = []
         for i in self.mass:
             if (i.number % 34 != 0) and (field[i.number - 1].color != self.color):
-                self.neighbors_2 += [field[i.number - 1]] #учтены границы
+                self.neighbors_2 += [field[i.number - 1]]
             if ((i.number + 1) % 34 != 0) and (field[i.number + 1].color != self.color):
-                self.neighbors_2 += [field[i.number + 1]] #чтены границы (далее нигде не учтены)
+                self.neighbors_2 += [field[i.number + 1]]
             if (i.number - 34 >= 0) and (field[i.number - 34].color != self.color):
                 self.neighbors_2 += [field[i.number - 34]]
-            if (i.number + 34 >= 0) and (field[i.number + 34].color != self.color):
+            if (i.number + 34 <= 781) and (field[i.number + 34].color != self.color):
                 self.neighbors_2 += [field[i.number +34]]
-                
+
             if (i.number // 34) % 2 == 0:
-                if (i.number - 35 >= 0) and (field[i.number - 35].color != self.color):
+                if (i.number - 35 >= 0) and (i.number % 34 != 0) and (field[i.number - 35].color != self.color):
                     self.neighbors_2 += [field[i.number - 35]]
-                if (i.number + 33 >= 0) and (field[i.number + 33].color != self.color):
+                if (i.number + 34 <= 781) and (i.number % 34 != 0) and (field[i.number + 33].color != self.color):
                     self.neighbors_2 += [field[i.number + 33]]
             else:
-                if (i.number + 35  >= 0) and (field[i.number + 35].color != self.color):
+                if (i.number + 34 <= 781) and ((i.number + 1) % 34 != 0) and (field[i.number + 35].color != self.color) :
                     self.neighbors_2 += [field[i.number + 35]]
-                if (i.number - 33  >= 0) and (field[i.number - 33].color != self.color):
+                if (i.number - 34 >= 0) and ((i.number + 1) % 34 != 0) and (field[i.number - 33].color != self.color) :
                     self.neighbors_2 += [field[i.number - 33]]
-                
+
         for j in self.neighbors_2:
             j.probability_2 = 0.2
-            
+
         return self.neighbors_2
 
     def rise(self):
         for i in self.neighbors_2:
-            if i.probability_2 >= random.random():
+            if (i.probability_2 >= random.uniform(0, 1)) and (i.color != self.color):
                 i.color = self.color
                 self.mass += [i]
+        self.mass = list(set(self.mass))
         self.neighbors_2 = []
 
-        
+    def eating(self):
+        self.mass = list(set(self.mass))
+        for i in self.mass:
+            for j in physarum_1.mass:
+                if i == j:
+                    self.mass.remove(i)
+            #if i.color != self.color:
+                #self.mass.remove(i)
+
+
+
+
 def search(click, field):
     minimum = 100000000000
     for i in range(0, len(field)):
@@ -200,8 +230,8 @@ border_y = 700
 FPS = 200
 
 "Описание используемых цветов"
-YELLOW_1 = (210, 200, 100)
-GREEN_1 = (120, 200, 125)
+YELLOW_1 = (210, 200, 100) #клетки гриба первого игрока
+GREEN_1 = (120, 200, 125) #клетки гриба второго игрока
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
@@ -210,12 +240,13 @@ MAGENTA = (255, 0, 255)
 CYAN = (0, 255, 255)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-VIOLET = (148, 0, 211)
+DARK_YELLOW_1 = (111, 103, 32) #обводка клетки, в которой находится курсор, для первого игрока
+DARK_GREEN_1 = (35, 86, 54) #обводка клетки, в которой находится курсор, для второго игрока
 GRAY = (128, 128, 128)
 
 
 
-screen = pygame.display.set_mode((border_x, border_y))        
+screen = pygame.display.set_mode((border_x, border_y))
 screen.fill(BLACK)
 pygame.display.update()
 clock = pygame.time.Clock()
@@ -242,7 +273,7 @@ for i in range(0, 23):
     if i % 2 == 0:
         x0 = a * (3**0.5) / 2
     else:
-        x0 = a * (3**0.5)        
+        x0 = a * (3**0.5)
     for j in range(0, 34):
         new_hexagon = Hexagon(screen, x0, y0, a,  34 * i + j)
         new_hexagon.draw()
@@ -260,7 +291,7 @@ finished = False
 while not finished_1:
 
     screen.fill(BLACK)
-    
+
     for i in field:
         i.draw()
 
@@ -270,8 +301,8 @@ while not finished_1:
     click_position = pygame.mouse.get_pos()
     choice_hex_number = search(click_position, field)
     field[choice_hex_number].choice()
-  
-    
+
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             finished_1 = True
@@ -287,12 +318,12 @@ while not finished_1:
 while not finished_2:
 
     screen.fill(BLACK)
-    
+
     for i in field:
         i.draw()
 
     physarum_1.draw()
-    
+
     clock.tick(FPS)
 
     click_position = pygame.mouse.get_pos()
@@ -302,8 +333,8 @@ while not finished_2:
     else:
         choice_hex_number = "1"
 
-  
-    
+
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             finished_2 = True
@@ -315,19 +346,18 @@ while not finished_2:
                 finished_3 = False
     pygame.display.update()
 
+physarum_1.draw()
+physarum_2.draw()
 physarum_1.neighbors_1 = physarum_1.probability_of_motion()
 physarum_2.neighbors_2 = physarum_2.probability_of_motion()
 
 while not finished_3:
-    
+
     screen.fill(BLACK)
-    
+
     for i in field:
         i.draw()
 
-
-    physarum_1.draw()
-    physarum_2.draw()
 
     if surface:
         for i in field:
@@ -339,17 +369,17 @@ while not finished_3:
             i.drawf()
         for i in feed_2:
             i.drawf()
-           
-        
+
+
 
     clock.tick(FPS)
 
 
-    
+
     click_position = pygame.mouse.get_pos()
     choice_hex_number = search(click_position, field)
     field[choice_hex_number].choice()
-    
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -371,13 +401,28 @@ while not finished_3:
             elif (event.type == pygame.KEYDOWN) and (move == -1) and (event.key == pygame.K_RIGHT):
                 move = 2
                 physarum_1.rise()
-                physarum_1.draw()
-                physarum_2.draw()
+
+                #print("__________________")
+                #print("первый", len(physarum_1.mass), "клетки" )
+                #for j in physarum_1.mass:
+                    #print(j.number)
+
+                physarum_2.eating()
+                for j in physarum_2.mass:
+                    if j.color != GREEN_1:
+                        physarum_2.mass.remove(j)
+
+                #print("второй", len(physarum_2.mass), "клетки" )
+                #for j in physarum_2.mass:
+                    #print(   j.number)
+
                 for i in field:
                     i.probability_1 = 0
                     i.probability_2 = 0
                 physarum_1.neighbors_1 = physarum_1.probability_of_motion()
                 physarum_2.neighbors_2 = physarum_2.probability_of_motion()
+
+
 
 
 
@@ -392,18 +437,34 @@ while not finished_3:
                 physarum_1.neighbors_1 = physarum_1.probability_of_motion()
                 physarum_2.neighbors_2 = physarum_2.probability_of_motion()
 
-                
+
 
             elif (event.type == pygame.KEYDOWN) and (move == -2) and (event.key == pygame.K_RIGHT):
                 move = 1
                 physarum_2.rise()
-                physarum_1.draw()
-                physarum_2.draw()
+
+                #print("__________________")
+                #print("второй", len(physarum_2.mass), "клетки" )
+                #for j in physarum_2.mass:
+                    #print(   j.number)
+
+                physarum_1.eating()
+                for j in physarum_1.mass:
+                    if j.color != YELLOW_1:
+                        physarum_1.mass.remove(j)
+
+                #print("первый", len(physarum_1.mass), "клетки" )
+                #for j in physarum_1.mass:
+                    #print(j.number)
+
                 for i in field:
                     i.probability_1 = 0
                     i.probability_2 = 0
                 physarum_1.neighbors_1 = physarum_1.probability_of_motion()
                 physarum_2.neighbors_2 = physarum_2.probability_of_motion()
+
+
+
 
 
             if event.type == pygame.KEYDOWN:
@@ -412,9 +473,10 @@ while not finished_3:
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
                     surface = False
-                    
+
 
     pygame.display.update()
 
 pygame.quit()
+
 
