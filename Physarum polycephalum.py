@@ -78,6 +78,16 @@ class Hexagon:
             self.text_2 = self.f_2.render(str(self.food_2), True, BLUE )
             screen.blit(self.text_2, (self.x + a / 20 , self.y ))
 
+    #неподтвержденный ход
+    def unconfirmed_move(self):
+        polygon(self.screen, VIOLET, [(self.x, self.y - self.a),
+                                     (self.x + self.a * 3**0.5 /2, self.y - self.a/2),
+                                     (self.x + self.a * 3**0.5 /2, self.y + self.a/2),
+                                     (self.x, self.y + self.a),
+                                     (self.x - self.a * 3**0.5 /2, self.y + self.a/2),
+                                     (self.x - self.a * 3**0.5 /2, self.y - self.a/2),
+                                     (self.x, self.y - self.a)], 3)
+
 
 class Food:
 
@@ -267,6 +277,15 @@ def search(click, field):
     return m
 
 def winner(win):
+    text01 = f_01.render('Нажмите стрелочку вверх, чтобы вернуться к полю,', True,
+                    (255, 255, 255))
+    screen.blit(text01, (20, 150))
+    text02 = f_02.render('затем зажмите пробел, чтобы посмотреть вероятности', True,
+                    (255, 255, 255))
+    screen.blit(text02, (20, 200))
+    text03 = f_03.render('Чтобы вернуться к результату, нажмите стрелочку вниз', True,
+                    (255, 255, 255))
+    screen.blit(text03, (20, 250))
     if win == 1:
         text = f.render('Победил желтый гриб!', True,
                     (255, 255, 255))
@@ -285,18 +304,30 @@ def winner(win):
 пересчитывает вероятности с учетом этой еды. Находит сумму всех вероятностей
 в итоге он положит еду туда, где эта сумма оказалась больше всего"""
 
-def computer():
-    max_summa = 0
-    for k in field:
-        summa = 0
-        k.food_2 += 1
-        physarum_2.neighbors_2 = physarum_2.probability_of_motion()
-        for d in field:
-            summa += d.probability_2
-        if summa >= max_summa:
-            max_summa = summa
-            computer_choice = k
-        k.food_2 += -1
+
+class Artificial_intelligence:
+
+    def __init__(self):
+        self.summa = 0
+        self.summa_max = 0
+        self.computer_choice = -1
+
+    def  beginning(self):
+        return random.randint(0, len(field) - 1)
+    
+    def search(self):
+        global field
+        self.max_summa = 0
+        for k in field:
+            self.summa = 0
+            k.food_2 += 1
+            physarum_2.neighbors_2 = physarum_2.probability_of_motion()
+            for d in field:
+                self.summa += d.probability_2
+            if self.summa >= self.max_summa:
+                self.max_summa = self.summa
+                self.computer_choice = k.number
+            k.food_2 += -1
     
 
             
@@ -334,19 +365,25 @@ clock = pygame.time.Clock()
 
 click_position = 0
 
-summa = 0
-summa_max = 0
-computer_choice = 0
+players = 0
 finished_0 = False
-finished_1 = False
+finished_1 = True
 finished_2 = True
 finished_3 = True
 finished_4 = True
 surface = False
+surface_1 = False
 move = 1
-remainder_of_moves = 10 #всего ходов на партию (остаток ходов)
+remainder_of_moves = 12 #всего ходов на партию (остаток ходов)
 win = -1
+hex_with_new_food = 0
+
+f_01 = pygame.font.Font(None, 50)
+f_02 = pygame.font.Font(None, 50)
+f_03 = pygame.font.Font(None, 50)
 f = pygame.font.Font(None, 140)
+f_0 = pygame.font.Font(None, 140)
+f_3 = pygame.font.Font(None, 140)
 
 
 feed_1 = [] #здесь будут храниться данные о корме для 1 (желтого) гриба
@@ -377,199 +414,457 @@ pygame.display.update()
 clock = pygame.time.Clock()
 
 
-while not finished_1:
+while not finished_0:
 
     screen.fill(BLACK)
+    text = f.render('Нажмите:', True,
+                    (255, 255, 255))
+    screen.blit(text, (20, 20))
+
+    text_0 = f_0.render('1 - играть с ИИ', True,
+                    (255, 255, 255))
+    screen.blit(text_0, (20, 120))
+
+    text_3 = f_3.render('2 - играть вдвоем', True,
+                    (255, 255, 255))
+    screen.blit(text_3, (20, 220))
     
-    for i in field:
-        i.draw()
-
-
-    clock.tick(FPS)
-
-    click_position = pygame.mouse.get_pos()
-    choice_hex_number = search(click_position, field)
-    field[choice_hex_number].choice()
-  
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            finished_1 = True
-        else:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                physarum_1 = Physarum_1(screen, field[choice_hex_number], YELLOW_1)
-                physarum_1.probability_of_motion()
-                finished_1 = True
-                finished_2 = False
     pygame.display.update()
 
-
-while not finished_2:
-
-    screen.fill(BLACK)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            finished_0 = True
+        else:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    finished_0 = True
+                    players = 1
+                    finished_1 = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_2:
+                    finished_0 = True
+                    players = 2
+                    finished_1 = False
     
-    for i in field:
-        i.draw()
 
-    physarum_1.draw()
-    
-    clock.tick(FPS)
+if players == 1:
 
-    click_position = pygame.mouse.get_pos()
-    choice_hex_number = search(click_position, field)
-    if field[choice_hex_number] != physarum_1.mass[0]:
+    while not finished_1:
+        
+        screen.fill(BLACK)
+        
+        for i in field:
+            i.draw()
+
+
+        clock.tick(FPS)
+
+        click_position = pygame.mouse.get_pos()
+        choice_hex_number = search(click_position, field)
         field[choice_hex_number].choice()
-    else:
-        choice_hex_number = "1"
+      
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                finished_1 = True
+            else:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    physarum_1 = Physarum_1(screen, field[choice_hex_number], YELLOW_1)
+                    physarum_1.probability_of_motion()
+                    finished_1 = True
+                    finished_2 = False
+        pygame.display.update()
 
-  
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+    if not finished_2:
+        computer = Artificial_intelligence()
+
+
+    while not finished_2:
+
+        screen.fill(BLACK)
+        
+        for i in field:
+            i.draw()
+
+        physarum_1.draw()
+        
+        clock.tick(FPS)
+
+        choice_hex_number = computer.beginning()        
+
+        if field[choice_hex_number] != physarum_1.mass[0]:
+            physarum_2 = Physarum_2(screen, field[choice_hex_number], GREEN_1)
             finished_2 = True
-        else:
-            if (event.type == pygame.MOUSEBUTTONDOWN) and (choice_hex_number != "1"):
-                physarum_2 = Physarum_2(screen, field[choice_hex_number], GREEN_1)
+            finished_3 = False
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 finished_2 = True
-                finished_3 = False
-    pygame.display.update()
 
-if not finished_3:
-    physarum_1.draw()
-    physarum_2.draw()
-    physarum_1.neighbors_1 = physarum_1.probability_of_motion()
-    physarum_2.neighbors_2 = physarum_2.probability_of_motion()
-
-while not finished_3:
-    
-    screen.fill(BLACK)
-    
-    for i in field:
-        i.draw()
+                
+        pygame.display.update()
 
 
-    if surface:
+    if not finished_3:
+        physarum_1.draw()
+        physarum_2.draw()
+        physarum_1.neighbors_1 = physarum_1.probability_of_motion()
+        physarum_2.neighbors_2 = physarum_2.probability_of_motion()
+
+    while not finished_3:
+        
+        screen.fill(BLACK)
+        
         for i in field:
-            i.show_probability()
-    else:
-        for i in field:
-            i.show_food()
-        for i in feed_1:
-            i.drawf()
-        for i in feed_2:
-            i.drawf()
-           
+            i.draw()
+
+
+        if surface:
+            for i in field:
+                i.show_probability()
+        else:
+            for i in field:
+                i.show_food()
+            for i in feed_1:
+                i.drawf()
+            for i in feed_2:
+                i.drawf()
+
+        if hex_with_new_food != 0:
+            hex_with_new_food.unconfirmed_move()
+               
+            
+
+        clock.tick(FPS)
+
+
+        
+        click_position = pygame.mouse.get_pos()
+        choice_hex_number = search(click_position, field)
+        field[choice_hex_number].choice()
         
 
-    clock.tick(FPS)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                finished_3 = True
+            else:
+                if (event.type == pygame.MOUSEBUTTONDOWN) and (move == 1):
+                    new_food = Food(screen, field[choice_hex_number].x - field[choice_hex_number].a / 2.5, field[choice_hex_number].y, field[choice_hex_number].a, RED )
+                    field[choice_hex_number].food_1 += 1
+                    hex_with_new_food = field[choice_hex_number]
+                    feed_1 += [new_food]
+                    move = 11
+                    for i in field:
+                        i.probability_1 = 0
+                        i.probability_2 = 0
+                    physarum_1.neighbors_1 = physarum_1.probability_of_motion()
+                    physarum_2.neighbors_2 = physarum_2.probability_of_motion()
 
 
+                elif (event.type == pygame.MOUSEBUTTONDOWN) and (move == 11) and (field[choice_hex_number] == hex_with_new_food):
+                    hex_with_new_food.food_1 += -1
+                    hex_with_new_food = 0
+                    feed_1.pop(-1)
+                    move = 1
+                    for i in field:
+                        i.probability_1 = 0
+                        i.probability_2 = 0
+                    physarum_1.neighbors_1 = physarum_1.probability_of_motion()
+                    physarum_2.neighbors_2 = physarum_2.probability_of_motion()
+
+
+                elif (event.type == pygame.KEYDOWN) and (move == 11) and (event.key == pygame.K_RIGHT):
+                    hex_with_new_food = 0
+                    move = -2
+                    physarum_1.rise()
+
+                    #print("__________________")
+                    #print("первый", len(physarum_1.mass), "клетки" )
+                    #for j in physarum_1.mass:
+                        #print(j.number)
+                        
+                    physarum_2.eating()
+                    for j in physarum_2.mass:
+                        if j.color != GREEN_1:
+                            physarum_2.mass.remove(j)
+                    
+                    #print("второй", len(physarum_2.mass), "клетки" )
+                    #for j in physarum_2.mass:
+                        #print(   j.number)
+                        
+                    for i in field:
+                        i.probability_1 = 0
+                        i.probability_2 = 0
+                    physarum_1.neighbors_1 = physarum_1.probability_of_motion()
+                    physarum_2.neighbors_2 = physarum_2.probability_of_motion()
+                    
+                    
+                    
+
+
+                elif move == -2:
+                    computer.search()
+                    new_food = Food(screen, field[computer.computer_choice].x + field[computer.computer_choice].a / 2.5, field[computer.computer_choice].y, field[computer.computer_choice].a, BLUE)
+                    field[computer.computer_choice].food_2 += 1
+                    feed_2 += [new_food]
+                    move = 1
+                    for i in field:
+                        i.probability_1 = 0
+                        i.probability_2 = 0
+                    physarum_1.neighbors_1 = physarum_1.probability_of_motion()
+                    physarum_2.neighbors_2 = physarum_2.probability_of_motion()
+                    physarum_2.rise()
+                    physarum_1.eating()
+                    for j in physarum_1.mass:
+                        if j.color != YELLOW_1:
+                            physarum_1.mass.remove(j)
+                    for i in field:
+                        i.probability_1 = 0
+                        i.probability_2 = 0
+                    physarum_1.neighbors_1 = physarum_1.probability_of_motion()
+                    physarum_2.neighbors_2 = physarum_2.probability_of_motion()
+
+                    remainder_of_moves += -1
+                    if remainder_of_moves <= 0:
+                        finished_3 = True
+                        finished_4 = False
+                    
+                    
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        surface = True
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_SPACE:
+                        surface = False
+                        
+
+        pygame.display.update()
+        
+
+
+if players == 2:
     
-    click_position = pygame.mouse.get_pos()
-    choice_hex_number = search(click_position, field)
-    field[choice_hex_number].choice()
-    
+    while not finished_1:
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            finished_3 = True
+        screen.fill(BLACK)
+        
+        for i in field:
+            i.draw()
+
+
+        clock.tick(FPS)
+
+        click_position = pygame.mouse.get_pos()
+        choice_hex_number = search(click_position, field)
+        field[choice_hex_number].choice()
+      
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                finished_1 = True
+            else:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    physarum_1 = Physarum_1(screen, field[choice_hex_number], YELLOW_1)
+                    physarum_1.probability_of_motion()
+                    finished_1 = True
+                    finished_2 = False
+        pygame.display.update()
+
+
+    while not finished_2:
+
+        screen.fill(BLACK)
+        
+        for i in field:
+            i.draw()
+
+        physarum_1.draw()
+        
+        clock.tick(FPS)
+
+        click_position = pygame.mouse.get_pos()
+        choice_hex_number = search(click_position, field)
+        if field[choice_hex_number] != physarum_1.mass[0]:
+            field[choice_hex_number].choice()
         else:
-            if (event.type == pygame.MOUSEBUTTONDOWN) and (move == 1):
-                new_food = Food(screen, field[choice_hex_number].x - field[choice_hex_number].a / 2.5, field[choice_hex_number].y, field[choice_hex_number].a, RED )
-                field[choice_hex_number].food_1 += 1
-                feed_1 += [new_food]
-                move = -1
-                for i in field:
-                    i.probability_1 = 0
-                    i.probability_2 = 0
-                physarum_1.neighbors_1 = physarum_1.probability_of_motion()
-                physarum_2.neighbors_2 = physarum_2.probability_of_motion()
+            choice_hex_number = "1"
+
+      
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                finished_2 = True
+            else:
+                if (event.type == pygame.MOUSEBUTTONDOWN) and (choice_hex_number != "1"):
+                    physarum_2 = Physarum_2(screen, field[choice_hex_number], GREEN_1)
+                    finished_2 = True
+                    finished_3 = False
+        pygame.display.update()
+
+    if not finished_3:
+        physarum_1.draw()
+        physarum_2.draw()
+        physarum_1.neighbors_1 = physarum_1.probability_of_motion()
+        physarum_2.neighbors_2 = physarum_2.probability_of_motion()
+
+    while not finished_3:
+        
+        screen.fill(BLACK)
+        
+        for i in field:
+            i.draw()
 
 
+        if surface:
+            for i in field:
+                i.show_probability()
+        else:
+            for i in field:
+                i.show_food()
+            for i in feed_1:
+                i.drawf()
+            for i in feed_2:
+                i.drawf()
+               
+        if hex_with_new_food != 0:
+            hex_with_new_food.unconfirmed_move()
 
-            elif (event.type == pygame.KEYDOWN) and (move == -1) and (event.key == pygame.K_RIGHT):
-                move = 2
-                physarum_1.rise()
+        clock.tick(FPS)
 
-                #print("__________________")
-                #print("первый", len(physarum_1.mass), "клетки" )
-                #for j in physarum_1.mass:
-                    #print(j.number)
+
+        
+        click_position = pygame.mouse.get_pos()
+        choice_hex_number = search(click_position, field)
+        field[choice_hex_number].choice()
+        
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                finished_3 = True
+            else:
+                if (event.type == pygame.MOUSEBUTTONDOWN) and (move == 1):
+                    new_food = Food(screen, field[choice_hex_number].x - field[choice_hex_number].a / 2.5, field[choice_hex_number].y, field[choice_hex_number].a, RED )
+                    field[choice_hex_number].food_1 += 1
+                    hex_with_new_food = field[choice_hex_number]
+                    feed_1 += [new_food]
+                    move = 11
+                    for i in field:
+                        i.probability_1 = 0
+                        i.probability_2 = 0
+                    physarum_1.neighbors_1 = physarum_1.probability_of_motion()
+                    physarum_2.neighbors_2 = physarum_2.probability_of_motion()
+
+
+                elif (event.type == pygame.MOUSEBUTTONDOWN) and (move == 11) and (field[choice_hex_number] == hex_with_new_food):
+                    hex_with_new_food.food_1 += -1
+                    hex_with_new_food = 0
+                    feed_1.pop(-1)
+                    move = 1
+                    for i in field:
+                        i.probability_1 = 0
+                        i.probability_2 = 0
+                    physarum_1.neighbors_1 = physarum_1.probability_of_motion()
+                    physarum_2.neighbors_2 = physarum_2.probability_of_motion()
+
+
+                elif (event.type == pygame.KEYDOWN) and (move == 11) and (event.key == pygame.K_RIGHT):
+                    hex_with_new_food = 0
+                    move = -2
+                    physarum_1.rise()
+
+                    #print("__________________")
+                    #print("первый", len(physarum_1.mass), "клетки" )
+                    #for j in physarum_1.mass:
+                        #print(j.number)
+                        
+                    physarum_2.eating()
+                    for j in physarum_2.mass:
+                        if j.color != GREEN_1:
+                            physarum_2.mass.remove(j)
                     
-                physarum_2.eating()
-                for j in physarum_2.mass:
-                    if j.color != GREEN_1:
-                        physarum_2.mass.remove(j)
-                
-                #print("второй", len(physarum_2.mass), "клетки" )
-                #for j in physarum_2.mass:
-                    #print(   j.number)
+                    #print("второй", len(physarum_2.mass), "клетки" )
+                    #for j in physarum_2.mass:
+                        #print(   j.number)
+                        
+                    for i in field:
+                        i.probability_1 = 0
+                        i.probability_2 = 0
+                    physarum_1.neighbors_1 = physarum_1.probability_of_motion()
+                    physarum_2.neighbors_2 = physarum_2.probability_of_motion()
                     
-                for i in field:
-                    i.probability_1 = 0
-                    i.probability_2 = 0
-                physarum_1.neighbors_1 = physarum_1.probability_of_motion()
-                physarum_2.neighbors_2 = physarum_2.probability_of_motion()
-                
-                
-                
-
-
-            elif (event.type == pygame.MOUSEBUTTONDOWN) and (move == 2):
-                new_food = Food(screen, field[choice_hex_number].x + field[choice_hex_number].a / 2.5, field[choice_hex_number].y, field[choice_hex_number].a, BLUE)
-                field[choice_hex_number].food_2 += 1
-                feed_2 += [new_food]
-                move = -2
-                for i in field:
-                    i.probability_1 = 0
-                    i.probability_2 = 0
-                physarum_1.neighbors_1 = physarum_1.probability_of_motion()
-                physarum_2.neighbors_2 = physarum_2.probability_of_motion()
-
-                
-
-            elif (event.type == pygame.KEYDOWN) and (move == -2) and (event.key == pygame.K_RIGHT):
-                move = 1
-                physarum_2.rise()
-
-                #print("__________________")
-                #print("второй", len(physarum_2.mass), "клетки" )
-                #for j in physarum_2.mass:
-                    #print(   j.number)
-                
-                physarum_1.eating()
-                for j in physarum_1.mass:
-                    if j.color != YELLOW_1:
-                        physarum_1.mass.remove(j)
-
-                #print("первый", len(physarum_1.mass), "клетки" )
-                #for j in physarum_1.mass:
-                    #print(j.number)
-                
-                for i in field:
-                    i.probability_1 = 0
-                    i.probability_2 = 0
-                physarum_1.neighbors_1 = physarum_1.probability_of_motion()
-                physarum_2.neighbors_2 = physarum_2.probability_of_motion()
-
-                remainder_of_moves += -1
-                if remainder_of_moves <= 0:
-                    finished_3 = True
-                    finished_4 = False
-                
-                
-                
-
-
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    surface = True
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_SPACE:
-                    surface = False
+                    
                     
 
-    pygame.display.update()
+
+                elif (event.type == pygame.MOUSEBUTTONDOWN) and (move == -2):
+                    new_food = Food(screen, field[choice_hex_number].x + field[choice_hex_number].a / 2.5, field[choice_hex_number].y, field[choice_hex_number].a, BLUE)
+                    field[choice_hex_number].food_2 += 1
+                    feed_2 += [new_food]
+                    hex_with_new_food = field[choice_hex_number]
+                    move = -22
+                    for i in field:
+                        i.probability_1 = 0
+                        i.probability_2 = 0
+                    physarum_1.neighbors_1 = physarum_1.probability_of_motion()
+                    physarum_2.neighbors_2 = physarum_2.probability_of_motion()
+                    
+
+                elif (event.type == pygame.MOUSEBUTTONDOWN) and (move == -22) and (field[choice_hex_number] == hex_with_new_food):
+                    hex_with_new_food.food_2 += -1
+                    hex_with_new_food = 0
+                    feed_2.pop(-1)
+                    move = -2
+                    for i in field:
+                        i.probability_1 = 0
+                        i.probability_2 = 0
+                    physarum_1.neighbors_1 = physarum_1.probability_of_motion()
+                    physarum_2.neighbors_2 = physarum_2.probability_of_motion()
+
+                    
+
+                elif (event.type == pygame.KEYDOWN) and (move == -22) and (event.key == pygame.K_RIGHT):
+                    hex_with_new_food = 0
+                    move = 1
+                    physarum_2.rise()
+
+                    #print("__________________")
+                    #print("второй", len(physarum_2.mass), "клетки" )
+                    #for j in physarum_2.mass:
+                        #print(   j.number)
+                    
+                    physarum_1.eating()
+                    for j in physarum_1.mass:
+                        if j.color != YELLOW_1:
+                            physarum_1.mass.remove(j)
+
+                    #print("первый", len(physarum_1.mass), "клетки" )
+                    #for j in physarum_1.mass:
+                        #print(j.number)
+                    
+                    for i in field:
+                        i.probability_1 = 0
+                        i.probability_2 = 0
+                    physarum_1.neighbors_1 = physarum_1.probability_of_motion()
+                    physarum_2.neighbors_2 = physarum_2.probability_of_motion()
+
+                    remainder_of_moves += -1
+                    if remainder_of_moves <= 0:
+                        finished_3 = True
+                        finished_4 = False
+                    
+                    
+                    
+
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        surface = True
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_SPACE:
+                        surface = False
+                        
+
+        pygame.display.update()
 
 if not finished_4:
     if len(physarum_1.mass) > len(physarum_2.mass):
@@ -579,18 +874,47 @@ if not finished_4:
     else:
         win = 0
     
-print(len(physarum_1.mass), len(physarum_2.mass))
+if not finished_4:
+    print("клеток захвачено желтым грибом: ", len(physarum_1.mass), "захвачено зеленым грибом: ", len(physarum_2.mass))
 
 while not finished_4:
 
     screen.fill(BLACK)
 
-    winner(win)
+    if surface_1:
+        for i in field:
+            i.draw()
+        if surface:
+            for i in field:
+                i.show_probability()
+        else:
+            for i in field:
+                i.show_food()
+            for i in feed_1:
+                i.drawf()
+            for i in feed_2:
+                i.drawf()
+    else:
+        winner(win) 
+        
     
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             finished_4 = True
+
+        if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        surface_1 = True
+                    if event.key == pygame.K_DOWN:
+                        surface_1 = False
+
+        if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                        surface = True
+        if event.type == pygame.KEYUP:
+                if event.key == pygame.K_SPACE:
+                    surface = False
 
     pygame.display.update()
 
