@@ -512,6 +512,10 @@ if players == 1:
         physarum_2.neighbors_2 = physarum_2.probability_of_motion()
 
     while not finished_3:
+
+        if (len(physarum_1.mass) == 0) or (len(physarum_2.mass) == 0):
+            finished_3 = True
+            finished_4 = False
         
         screen.fill(BLACK)
         
@@ -549,7 +553,8 @@ if players == 1:
                 finished_3 = True
             else:
                 if (event.type == pygame.MOUSEBUTTONDOWN) and (move == 1):
-                    new_food = Food(screen, field[choice_hex_number].x - field[choice_hex_number].a / 2.5, field[choice_hex_number].y, field[choice_hex_number].a, RED )
+                    new_food = Food(screen, field[choice_hex_number].x - field[choice_hex_number].a / 2.5,
+                                    field[choice_hex_number].y, field[choice_hex_number].a, RED )
                     field[choice_hex_number].food_1 += 1
                     hex_with_new_food = field[choice_hex_number]
                     feed_1 += [new_food]
@@ -604,7 +609,8 @@ if players == 1:
 
                 elif move == -2:
                     computer.search()
-                    new_food = Food(screen, field[computer.computer_choice].x + field[computer.computer_choice].a / 2.5, field[computer.computer_choice].y, field[computer.computer_choice].a, BLUE)
+                    new_food = Food(screen, field[computer.computer_choice].x + field[computer.computer_choice].a / 2.5,
+                                    field[computer.computer_choice].y, field[computer.computer_choice].a, BLUE)
                     field[computer.computer_choice].food_2 += 1
                     feed_2 += [new_food]
                     move = 1
@@ -708,6 +714,10 @@ if players == 2:
         physarum_2.neighbors_2 = physarum_2.probability_of_motion()
 
     while not finished_3:
+
+        if (len(physarum_1.mass) == 0) or (len(physarum_2.mass) == 0):
+            finished_3 = True
+            finished_4 = False
         
         screen.fill(BLACK)
         
@@ -743,7 +753,8 @@ if players == 2:
                 finished_3 = True
             else:
                 if (event.type == pygame.MOUSEBUTTONDOWN) and (move == 1):
-                    new_food = Food(screen, field[choice_hex_number].x - field[choice_hex_number].a / 2.5, field[choice_hex_number].y, field[choice_hex_number].a, RED )
+                    new_food = Food(screen, field[choice_hex_number].x - field[choice_hex_number].a / 2.5,
+                                    field[choice_hex_number].y, field[choice_hex_number].a, RED )
                     field[choice_hex_number].food_1 += 1
                     hex_with_new_food = field[choice_hex_number]
                     feed_1 += [new_food]
@@ -797,7 +808,8 @@ if players == 2:
 
 
                 elif (event.type == pygame.MOUSEBUTTONDOWN) and (move == -2):
-                    new_food = Food(screen, field[choice_hex_number].x + field[choice_hex_number].a / 2.5, field[choice_hex_number].y, field[choice_hex_number].a, BLUE)
+                    new_food = Food(screen, field[choice_hex_number].x + field[choice_hex_number].a / 2.5,
+                                    field[choice_hex_number].y, field[choice_hex_number].a, BLUE)
                     field[choice_hex_number].food_2 += 1
                     feed_2 += [new_food]
                     hex_with_new_food = field[choice_hex_number]
