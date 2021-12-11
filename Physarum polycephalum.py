@@ -691,6 +691,13 @@ if players == 2:
                     physarum_1.probability_of_motion()
                     finished_1 = True
                     finished_2 = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_m:
+                        music_off = not music_off
+                        if music_off:
+                            pygame.mixer.music.pause()
+                        else:
+                            pygame.mixer.music.unpause()
         pygame.display.update()
 
 
@@ -722,6 +729,14 @@ if players == 2:
                     physarum_2 = Physarum_2(screen, field[choice_hex_number], GREEN_1)
                     finished_2 = True
                     finished_3 = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_m:
+                        music_off = not music_off
+                        if music_off:
+                            pygame.mixer.music.pause()
+                        else:
+                            pygame.mixer.music.unpause()
+
         pygame.display.update()
 
     if not finished_3:
@@ -880,9 +895,6 @@ if players == 2:
                     if remainder_of_moves <= 0:
                         finished_3 = True
                         finished_4 = False
-                    
-                    
-                    
 
 
                 if event.type == pygame.KEYDOWN:
@@ -891,7 +903,13 @@ if players == 2:
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_SPACE:
                         surface = False
-                        
+
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
+                    music_off = not music_off
+                    if music_off:
+                         pygame.mixer.music.pause()
+                    else:
+                        pygame.mixer.music.unpause()
 
         pygame.display.update()
 
@@ -902,6 +920,8 @@ if not finished_4:
         win = 2
     else:
         win = 0
+    pygame.mixer.music.pause()
+
     
 if not finished_4:
     print("клеток захвачено желтым грибом: ", len(physarum_1.mass), "захвачено зеленым грибом: ", len(physarum_2.mass))
