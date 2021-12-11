@@ -377,7 +377,7 @@ finished_4 = True
 surface = False
 surface_1 = False
 move = 1
-remainder_of_moves = 40 #всего ходов на партию (остаток ходов)
+remainder_of_moves = 5 #всего ходов на партию (остаток ходов)
 win = -1
 hex_with_new_food = 0
 music_off = True
@@ -485,6 +485,14 @@ if players == 1:
                     physarum_1.probability_of_motion()
                     finished_1 = True
                     finished_2 = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_m:
+                        music_off = not music_off
+                        if music_off:
+                            pygame.mixer.music.pause()
+                        else:
+                            pygame.mixer.music.unpause()
+                            
         pygame.display.update()
 
     if not finished_2:
@@ -654,7 +662,14 @@ if players == 1:
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_SPACE:
                         surface = False
-                        
+
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
+                    music_off = not music_off
+                    if music_off:
+                         pygame.mixer.music.pause()
+                    else:
+                        pygame.mixer.music.unpause()
+
 
         pygame.display.update()
         
@@ -920,7 +935,7 @@ if not finished_4:
         win = 2
     else:
         win = 0
-    pygame.mixer.music.pause()
+    pygame.mixer.music.stop()
 
     
 if not finished_4:
