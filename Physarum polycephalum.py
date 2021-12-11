@@ -9,6 +9,9 @@ from pygame.draw import *
 import random 
 pygame.init()
 
+##pygame.mixer.music.load("Music & Sounds/Rip & Tear.mp3")
+##pygame.mixer.music.play(-1)
+
 """Описание шестиугольных клеток"""
 class Hexagon:
 
@@ -374,9 +377,10 @@ finished_4 = True
 surface = False
 surface_1 = False
 move = 1
-remainder_of_moves = 12 #всего ходов на партию (остаток ходов)
+remainder_of_moves = 40 #всего ходов на партию (остаток ходов)
 win = -1
 hex_with_new_food = 0
+music_off = True
 
 f_01 = pygame.font.Font(None, 50)
 f_02 = pygame.font.Font(None, 50)
@@ -462,7 +466,13 @@ if players == 1:
         click_position = pygame.mouse.get_pos()
         choice_hex_number = search(click_position, field)
         field[choice_hex_number].choice()
-      
+
+
+        if music_off:
+            pygame.mixer.music.load("Music & Sounds/Rip & Tear.mp3")
+            pygame.mixer.music.play(-1)
+            music_off = False
+        
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -663,14 +673,14 @@ if players == 2:
         click_position = pygame.mouse.get_pos()
         choice_hex_number = search(click_position, field)
         field[choice_hex_number].choice()
-      
+
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 finished_1 = True
             else:
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    physarum_1 = Physarum_1(screen, field[choice_hex_number], YELLOW_1)
+                    physarum_1 = Physarum_1(screen, field[choice_hex_number], YELLOW_1) 
                     physarum_1.probability_of_motion()
                     finished_1 = True
                     finished_2 = False
