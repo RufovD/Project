@@ -1,9 +1,7 @@
 """если целая часть номера клетки при делении на 34 дает нечетное число, то (+- 1, +- 34, -33, +35), иначе (+- 1, +- 34, +33, -35"""
 
 
-
-
-import pygame
+import pygame 
 import math
 from pygame.draw import *
 import random 
@@ -183,8 +181,6 @@ class Physarum_1:
             for j in physarum_2.mass:
                 if i == j:
                     self.mass.remove(i)
-            #if i.color != self.color:
-                #self.mass.remove(i)
                 
             
 
@@ -265,8 +261,7 @@ class Physarum_2:
             for j in physarum_1.mass:
                 if i == j:
                     self.mass.remove(i)
-            #if i.color != self.color:
-                #self.mass.remove(i)
+
 
 
 
@@ -325,11 +320,13 @@ class Artificial_intelligence:
             self.summa = 0
             k.food_2 += 1
             physarum_2.neighbors_2 = physarum_2.probability_of_motion()
-            for d in field:
-                self.summa += d.probability_2
-            if self.summa >= self.max_summa:
-                self.max_summa = self.summa
-                self.computer_choice = k.number
+            
+            for d in physarum_2.neighbors_2:
+                if (d.probability_2 >= random.uniform(0, 1)) and (d.color != physarum_2.color):
+                    self.summa += 1
+                if self.summa >= self.max_summa:
+                    self.max_summa = self.summa
+                    self.computer_choice = k.number
             k.food_2 += -1
     
 
@@ -377,7 +374,8 @@ finished_4 = True
 surface = False
 surface_1 = False
 move = 1
-remainder_of_moves = 5 #всего ходов на партию (остаток ходов)
+rule = 0
+remainder_of_moves = 50 #всего ходов на партию (остаток ходов)
 win = -1
 hex_with_new_food = 0
 music_off = True
@@ -385,9 +383,19 @@ music_off = True
 f_01 = pygame.font.Font(None, 50)
 f_02 = pygame.font.Font(None, 50)
 f_03 = pygame.font.Font(None, 50)
+f_04 = pygame.font.Font(None, 140)
+f_05 = pygame.font.Font(None, 50)
+f_06 = pygame.font.Font(None, 50)
+f_07 = pygame.font.Font(None, 50)
+f_08 = pygame.font.Font(None, 50)
+f_09 = pygame.font.Font(None, 50)
+f_10 = pygame.font.Font(None, 50)
+
 f = pygame.font.Font(None, 140)
 f_0 = pygame.font.Font(None, 140)
 f_3 = pygame.font.Font(None, 140)
+
+
 
 
 feed_1 = [] #здесь будут храниться данные о корме для 1 (желтого) гриба
@@ -420,18 +428,103 @@ clock = pygame.time.Clock()
 
 while not finished_0:
 
-    screen.fill(BLACK)
-    text = f.render('Нажмите:', True,
-                    (255, 255, 255))
-    screen.blit(text, (20, 20))
+    if rule == 0:
+        
+        screen.fill(BLACK)
+        text = f.render('Нажмите:', True,
+                        (255, 255, 255))
+        screen.blit(text, (20, 20))
 
-    text_0 = f_0.render('1 - играть с ИИ', True,
-                    (255, 255, 255))
-    screen.blit(text_0, (20, 120))
+        text_0 = f_0.render('1 - играть с ИИ', True,
+                        (255, 255, 255))
+        screen.blit(text_0, (20, 120))
 
-    text_3 = f_3.render('2 - играть вдвоем', True,
-                    (255, 255, 255))
-    screen.blit(text_3, (20, 220))
+        text_3 = f_3.render('2 - играть вдвоем', True,
+                        (255, 255, 255))
+        screen.blit(text_3, (20, 220))
+
+        text_04 = f_04.render('3 - узнать правила', True,
+                        (255, 255, 255))
+        screen.blit(text_04, (20, 320))
+
+        grib_surf = pygame.image.load('grib1.png')
+
+        grib_rect = grib_surf.get_rect(
+        bottomright=(border_x, border_y + 20))
+        screen.blit(grib_surf, grib_rect)
+    
+        
+
+    if rule != 0:
+        screen.fill(BLACK)
+        text_05 = f_05.render('В этой игре вам придется взять на себя роль ученого, у которого есть свой собтвенный гриб вида ', True,
+                        (255, 255, 255))
+        screen.blit(text_05, (5, 20))
+        text_06 = f_06.render('свой собтвенный гриб Physarum polycephalum. Именно его судьбой ', True,
+                        (255, 255, 255))
+        screen.blit(text_06, (5, 50))
+        text_07 = f_07.render('вам придется управлять. Для победы вам необходимо захватить как  ', True,
+                        (255, 255, 255))
+        screen.blit(text_07, (5, 80))
+        text_08 = f_08.render('можно большую территорию на поле. Для этого расставляйте еду, ', True,
+                        (255, 255, 255))
+        screen.blit(text_08, (5, 110))
+        text_09 = f_09.render('тем самым увеличивая желание гриба распространяться к ней, а не  ', True,
+                        (255, 255, 255))
+        screen.blit(text_09, (5, 140))
+        text_10 = f_10.render('от нее. Но вот незадача - все придется делать в условиях настоящей', True,
+                        (255, 255, 255))
+        screen.blit(text_10, (5, 170))
+        text_05 = f_05.render('конкуренции - на поле вы не одни, в достижении господства вам бу-', True,
+                        (255, 255, 255))
+        screen.blit(text_05, (5, 200))
+        text_06 = f_06.render('дет мешать гриб соперника. Соревнуйтесь с друзьями или играйте ', True,
+                        (255, 255, 255))
+        screen.blit(text_06, (5, 230))
+        text_07 = f_07.render('против компьтера!', True,
+                        (255, 255, 255))
+        screen.blit(text_07, (5, 260))
+        text_08 = f_08.render('В свой первый ход игроки по очереди нажимают на выбранную клетку и', True,
+                        (255, 255, 255))
+        screen.blit(text_08, (5, 300))
+        text_09 = f_09.render('ставят свой гриб. Далее вся игра происходит пошагово. В ход игрок  ', True,
+                        (255, 255, 255))
+        screen.blit(text_09, (5, 330))
+        text_10 = f_10.render('ставит еду в ЛЮБУЮ выбранную клетку. Еда увеличивает вероят-', True,
+                        (255, 255, 255))
+        screen.blit(text_10, (5, 360))
+        text_05 = f_05.render('ность распространения гриба к себе, уменьшает от себя. Вероятность', True,
+                        (255, 255, 255))
+        screen.blit(text_05, (5, 390))
+        text_06 = f_06.render('в данный момент можно увидеть, зажав пробел. Еда для первого ', True,
+                        (255, 255, 255))
+        screen.blit(text_06, (5, 420))
+        text_07 = f_07.render('(желтого) гриба - красная, для второго (зеленого) - синяя. Вероятнос- ', True,
+                        (255, 255, 255))
+        screen.blit(text_07, (5, 450))
+        text_08 = f_08.render('ти соответствуют цвету еды. Один гриб может поедать клетки с дру-', True,
+                        (255, 255, 255))
+        screen.blit(text_08, (5, 480))
+        text_09 = f_09.render('гим грибом. После установки еды, ее можно переместить, повторно  ', True,
+                        (255, 255, 255))
+        screen.blit(text_09, (5, 510))
+        text_10 = f_10.render('нажав на только что установленную еду и выбрав новую клетку по-. ', True,
+                        (255, 255, 255))
+        screen.blit(text_10, (5, 540))
+        text_05 = f_05.render('ля. Для передачи хода нажмите стрелку вправо на клавиатуре. Игра ', True,
+                        (255, 255, 255))
+        screen.blit(text_05, (5, 570))
+        text_06 = f_06.render('заканчивается после того, как каждый сделает 50 ходов. Победите-', True,
+                        (255, 255, 255))
+        screen.blit(text_06, (5, 600))
+        text_07 = f_07.render('лем объявляется тот, кто захватил своим грибом больше клеток поля.', True,
+                        (255, 255, 255))
+        screen.blit(text_07, (5, 630))
+        text_08 = f_08.render('Нажмите 4, чтобы вернуться в меню.', True,
+                        (255, 0, 255))
+        screen.blit(text_08, (5, 660))
+        
+        
     
     pygame.display.update()
 
@@ -439,16 +532,22 @@ while not finished_0:
         if event.type == pygame.QUIT:
             finished_0 = True
         else:
-            if event.type == pygame.KEYDOWN:
+            if (event.type == pygame.KEYDOWN) and (rule == 0):
                 if event.key == pygame.K_1:
                     finished_0 = True
                     players = 1
                     finished_1 = False
-            if event.type == pygame.KEYDOWN:
+            if (event.type == pygame.KEYDOWN) and (rule == 0):
                 if event.key == pygame.K_2:
                     finished_0 = True
                     players = 2
                     finished_1 = False
+            if (event.type == pygame.KEYDOWN) and (rule == 0):
+                if event.key == pygame.K_3:
+                    rule = 1
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_4:
+                    rule = 0
     
 first_run = True
 
@@ -469,11 +568,11 @@ if players == 1:
         field[choice_hex_number].choice()
 
 
-        if first_run:
-            pygame.mixer.music.load("Music & Sounds/Rip & Tear.mp3")
-            pygame.mixer.music.play(-1)
-            music_off = False
-            first_run = False
+        #if first_run:
+            #pygame.mixer.music.load("Music & Sounds/Rip & Tear.mp3")
+            #pygame.mixer.music.play(-1)
+            #music_off = False
+            #first_run = False
         
         
         for event in pygame.event.get():
@@ -886,19 +985,11 @@ if players == 2:
                     move = 1
                     physarum_2.rise()
 
-                    #print("__________________")
-                    #print("второй", len(physarum_2.mass), "клетки" )
-                    #for j in physarum_2.mass:
-                        #print(   j.number)
                     
                     physarum_1.eating()
                     for j in physarum_1.mass:
                         if j.color != YELLOW_1:
                             physarum_1.mass.remove(j)
-
-                    #print("первый", len(physarum_1.mass), "клетки" )
-                    #for j in physarum_1.mass:
-                        #print(j.number)
                     
                     for i in field:
                         i.probability_1 = 0
