@@ -450,6 +450,7 @@ while not finished_0:
                     players = 2
                     finished_1 = False
     
+first_run = True
 
 if players == 1:
 
@@ -468,10 +469,11 @@ if players == 1:
         field[choice_hex_number].choice()
 
 
-        if music_off:
+        if first_run:
             pygame.mixer.music.load("Music & Sounds/Rip & Tear.mp3")
             pygame.mixer.music.play(-1)
             music_off = False
+            first_run = False
         
         
         for event in pygame.event.get():
@@ -674,6 +676,11 @@ if players == 2:
         choice_hex_number = search(click_position, field)
         field[choice_hex_number].choice()
 
+        if first_run:
+            pygame.mixer.music.load("Music & Sounds/Rip & Tear.mp3")
+            pygame.mixer.music.play(-1)
+            music_off = False
+            first_run = False
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
