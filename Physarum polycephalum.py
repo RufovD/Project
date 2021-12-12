@@ -4,11 +4,11 @@
 import pygame 
 import math
 from pygame.draw import *
-import random 
+import random
+import cv2
+
 pygame.init()
 
-##pygame.mixer.music.load("Music & Sounds/Rip & Tear.mp3")
-##pygame.mixer.music.play(-1)
 
 """Описание шестиугольных клеток"""
 class Hexagon:
@@ -426,6 +426,48 @@ pygame.display.update()
 clock = pygame.time.Clock()
 
 
+video_name = "Music & Video/Physarum_Polycephalum.mp4"
+cap = cv2.VideoCapture(video_name)
+ret, img = cap.read()
+#print(ret) #видео захвачено нормально, если ret == True
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+img = cv2.resize(img, (border_x, border_y))
+img = cv2.transpose(img)
+surf = pygame.surface.Surface((img.shape[0], img.shape[1]))
+
+pygame.mixer.music.load("Music & Video/Refraction 1.33.mp3")
+pygame.mixer.music.play(-1)
+
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+            pygame.quit()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+            running = False
+            break
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
+            music_off = not music_off
+            if music_off:
+                pygame.mixer.music.pause()
+            else:
+                pygame.mixer.music.unpause()
+            
+    ret, img = cap.read()
+    if not ret:
+        running = False
+        break
+    else:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = cv2.resize(img, (border_x, border_y))
+        img = cv2.transpose(img)
+        pygame.surfarray.blit_array(surf, img)
+        screen.blit(surf, (0, 0))
+
+    pygame.display.flip()
+    clock.tick(FPS)
+
 while not finished_0:
 
     if rule == 0:
@@ -548,6 +590,13 @@ while not finished_0:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_4:
                     rule = 0
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
+                music_off = not music_off
+                if music_off:
+                    pygame.mixer.music.pause()
+                else:
+                    pygame.mixer.music.unpause()
+
     
 first_run = True
 
@@ -568,11 +617,11 @@ if players == 1:
         field[choice_hex_number].choice()
 
 
-        #if first_run:
-            #pygame.mixer.music.load("Music & Sounds/Rip & Tear.mp3")
-            #pygame.mixer.music.play(-1)
-            #music_off = False
-            #first_run = False
+        if first_run:
+            pygame.mixer.music.load("Music & Video/Rip & Tear.mp3")
+            pygame.mixer.music.play(-1)
+            music_off = False
+            first_run = False
         
         
         for event in pygame.event.get():
@@ -791,7 +840,7 @@ if players == 2:
         field[choice_hex_number].choice()
 
         if first_run:
-            pygame.mixer.music.load("Music & Sounds/Rip & Tear.mp3")
+            pygame.mixer.music.load("Music & Video/Rip & Tear.mp3")
             pygame.mixer.music.play(-1)
             music_off = False
             first_run = False
