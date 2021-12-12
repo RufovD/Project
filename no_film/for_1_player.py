@@ -98,6 +98,7 @@ def play_1(finished_1, finished_2, finished_3, screen, clock, move, surface, fee
         if (len(physarum_1.mass) == 0) or (len(physarum_2.mass) == 0):
             finished_3 = True
             finished_4 = False
+            return [physarum_1, physarum_2]
         
         screen.fill(BLACK)
         
