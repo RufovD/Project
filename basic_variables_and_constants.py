@@ -17,7 +17,7 @@ move = 1
 rule = 0
 
 #всего ходов на партию (остаток ходов)
-remainder_of_moves = 5
+remainder_of_moves = 45
 
 #номер победившего игрока
 win = -1
