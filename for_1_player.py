@@ -16,6 +16,8 @@ from basic_variables_and_constants import *
 #игра с ИИ
 def play_1(finished_1, finished_2, finished_3, screen, clock, move, surface, feed_1, feed_2,
            hex_with_new_food, remainder_of_moves):
+
+    first_run = True
         
     #размещение желтого гриба игроком
     while not finished_1:
@@ -32,11 +34,11 @@ def play_1(finished_1, finished_2, finished_3, screen, clock, move, surface, fee
         choice_hex_number = search(click_position, field)
         field[choice_hex_number].choice(finished_1, finished_2, move)
 
-        #if first_run:
-            #pygame.mixer.music.load("Music & Sounds/Rip & Tear.mp3")
-            #pygame.mixer.music.play(-1)
-            #music_off = False
-            #first_run = False
+        if first_run:
+            pygame.mixer.music.load("Music & Video/Rip & Tear.mp3")
+            pygame.mixer.music.play(-1)
+            music_off = False
+            first_run = False
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -82,6 +84,12 @@ def play_1(finished_1, finished_2, finished_3, screen, clock, move, surface, fee
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 finished_2 = True
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
+                music_off = not music_off
+                if music_off:
+                    pygame.mixer.music.pause()
+                else:
+                    pygame.mixer.music.unpause()                
 
         pygame.display.update()
 
@@ -98,6 +106,7 @@ def play_1(finished_1, finished_2, finished_3, screen, clock, move, surface, fee
         if (len(physarum_1.mass) == 0) or (len(physarum_2.mass) == 0):
             finished_3 = True
             finished_4 = False
+            pygame.mixer.music.stop()
             return [physarum_1, physarum_2]
         
         screen.fill(BLACK)
@@ -207,6 +216,7 @@ def play_1(finished_1, finished_2, finished_3, screen, clock, move, surface, fee
                     if remainder_of_moves <= 0:
                         finished_3 = True
                         finished_4 = False
+                        pygame.mixer.music.stop()
                         return [physarum_1, physarum_2]
                             
                 if event.type == pygame.KEYDOWN:

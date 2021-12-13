@@ -109,6 +109,7 @@ def play_2(finished_1, finished_2, finished_3, screen, clock, move, surface, fee
         if (len(physarum_1.mass) == 0) or (len(physarum_2.mass) == 0):
             finished_3 = True
             finished_4 = False
+            pygame.mixer.music.stop()
             return [physarum_1, physarum_2]
         
         screen.fill(BLACK)
@@ -242,6 +243,7 @@ def play_2(finished_1, finished_2, finished_3, screen, clock, move, surface, fee
                     if remainder_of_moves <= 0:
                         finished_3 = True
                         finished_4 = False
+                        pygame.mixer.music.stop()
                         return [physarum_1, physarum_2] 
 
 
