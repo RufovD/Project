@@ -17,6 +17,8 @@ from basic_variables_and_constants import *
 def play_2(finished_1, finished_2, finished_3, screen, clock, move, surface, feed_1, feed_2,
            hex_with_new_food, remainder_of_moves):
 
+    first_run = True
+
     #размещение желтого гриба
     while not finished_1:
 
@@ -32,11 +34,11 @@ def play_2(finished_1, finished_2, finished_3, screen, clock, move, surface, fee
         choice_hex_number = search(click_position, field)
         field[choice_hex_number].choice(finished_1, finished_2, move)
 
-        #if first_run:
-            #pygame.mixer.music.load("Music & Sounds/Rip & Tear.mp3")
-            #pygame.mixer.music.play(-1)
-            #music_off = False
-            #first_run = False
+        if first_run:
+            pygame.mixer.music.load("Music & Video/Rip & Tear.mp3")
+            pygame.mixer.music.play(-1)
+            music_off = False
+            first_run = False
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
