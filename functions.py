@@ -30,7 +30,7 @@ def winner(win, screen, physarum_1, physarum_2, first_color, second_color):
     text03 = f_03.render('Чтобы вернуться к результату, нажмите стрелочку вниз', True,
                     (255, 255, 255))
     screen.blit(text03, (20, 250))
-    text05 = f_05.render('клеток захвачено желтым грибом: ' + str(len(physarum_1.mass)) + ', захвачено зеленым грибом: ' + str(len(physarum_2.mass)), True,
+    text05 = f_05.render('жёлтый гриб захватил клеток: ' + str(len(physarum_1.mass)) + ',   зелёный гриб захватил: ' + str(len(physarum_2.mass)), True,
                     (255, 255, 255))
     screen.blit(text05, (20, 500))
     
