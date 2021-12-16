@@ -20,6 +20,7 @@ def play_2(physarums, finished_1, finished_2, finished_3, screen,
             physarum_2.draw()
             [physarum_1, physarum_2, field] = draw_and_count(physarum_1, physarum_2, finished_3, field)
             while remainder_of_moves != 0:
+                print(remainder_of_moves)
                 [field, finished_3, feed_1, feed_2, physarum_1, physarum_2,
                 remainder_of_moves, move] = person_move(screen, field, finished_3, feed_1,
                 feed_2, physarum_1, physarum_2, remainder_of_moves, move)

@@ -370,7 +370,7 @@ def verification(event, move, hex_with_new_food, physarum_1, physarum_2, field, 
     **physarum_1**, physarum_2**, параметр окончания **finished_3**, данные о поле **field**, остаток ходов до
     конца игры **remainder_of_moves**, параметр действия за ход **d**. Возвращает пересчитанные **move**,
     **hex_with_new_food**, **physarum_1**, **physarum_2**, **field**, **remainder_of_moves**, **d**"""
-    if (event.type == pygame.KEYDOWN) and ((move == 11) or (move -22)) and (event.key == pygame.K_RIGHT) and (d == 0):
+    if (event.type == pygame.KEYDOWN) and ((move == 11) or (move -22)) and (event.key == pygame.K_RIGHT) and (d == 0) and (hex_with_new_food != -1):
         hex_with_new_food = -1
         if move == 11:
             move = -2
@@ -399,7 +399,7 @@ def person_move(screen, field, finished_3, feed_1, feed_2, physarum_1, physarum_
     **physarum_1**, **physarum_2**, **remainder_of_moves** и **move** """
     m = move
     surface = False
-    hex_with_new_food = -1 #гекс с только что положенной едой
+    hex_with_new_food = -1
     while (sign(move) == sign(m)):
         d = 0
         screen.fill((0, 0, 0))
@@ -427,7 +427,6 @@ def person_move(screen, field, finished_3, feed_1, feed_2, physarum_1, physarum_
                 move = move * (-1)
                 remainder_of_moves = 0
             else:
-                #еду ставит 1 игрок
                 [move, feed_1, physarum_1, physarum_2, field, hex_with_new_food, d] = put_food(screen, event, move, feed_1, physarum_1, physarum_2, finished_3, field, hex_with_new_food, choice_hex_number, d)
                 [move, feed_2, physarum_1, physarum_2, field, hex_with_new_food, d] = put_food(screen, event, move, feed_2, physarum_1, physarum_2, finished_3, field, hex_with_new_food, choice_hex_number, d)
                 [move, hex_with_new_food, feed_1, physarum_1, physarum_2, finished_3, field, d] = food_back(event, move, hex_with_new_food, choice_hex_number, feed_1, physarum_1, physarum_2, finished_3, field, d)
@@ -470,7 +469,7 @@ def computer_move(screen, field, finished_3, feed_2, physarum_1, physarum_2, com
     remainder_of_moves = early_victory(physarum_1, physarum_2, remainder_of_moves)
     return [field, feed_2, physarum_1, physarum_2, remainder_of_moves, move]
 
-#необходимые текстовые поля
+"""необходимые текстовые поля"""
 f_01 = pygame.font.Font(None, 50)
 f_02 = pygame.font.Font(None, 50)
 f_03 = pygame.font.Font(None, 50)

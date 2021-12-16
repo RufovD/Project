@@ -27,7 +27,7 @@ class Game:
         self.y0 = self.a
         """координата первого гекса по игрек"""
         
-        self.remainder_of_moves = 4
+        self.remainder_of_moves = 100
         """всего ходов на партию (остаток ходов)"""
         
         self.players = 0
