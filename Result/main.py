@@ -1,4 +1,4 @@
-from game_1 import *
+from game import *
 
 def main():
     """создает игру, заускает игровую сессию и финальное меню"""

@@ -1,4 +1,4 @@
-from functions_1 import *
+from functions import *
 
 def play_1(physarums, finished_1, finished_2, finished_3, screen,  
            remainder_of_moves, field, feed_1, feed_2, x0, y0, a):

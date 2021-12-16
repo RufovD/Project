@@ -161,7 +161,7 @@ def menu(screen, border_x, border_y):
                         (255, 255, 255))
     screen.blit(text_04, (20, 320))
 
-    grib_surf = pygame.image.load('grib1.png')
+    grib_surf = pygame.image.load('grib.png')
 
     grib_rect = grib_surf.get_rect(
     bottomright=(border_x, border_y + 20))

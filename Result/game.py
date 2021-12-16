@@ -1,6 +1,6 @@
-from functions_1 import *
-from for_1_player_1 import *
-from for_2_players_1 import *
+from functions import *
+from for_1_player import *
+from for_2_players import *
 
 class Game:
     """Тип данный, описывающих саму игру"""
